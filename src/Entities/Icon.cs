@@ -10,6 +10,6 @@
         /// <summary>
         ///     Suffix of the image, example .png .ico etc
         /// </summary>
-        public string sufix { get; set; }
+        public string suffix { get; set; }
     }
 }
