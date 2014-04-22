@@ -43,7 +43,7 @@
     <Compile Include="Core\FourSquareMultipleResponse.cs" />
     <Compile Include="Core\FourSquareResponse.cs" />
     <Compile Include="Core\FourSquareSingleResponse.cs" />
-    <Compile Include="Core\SharpSquareAsync.cs" />
+    <Compile Include="Core\SharpSquare.cs" />
     <Compile Include="Entities\Badge.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Checkin.cs" />
