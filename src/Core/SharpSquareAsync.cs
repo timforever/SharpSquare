@@ -9,10 +9,11 @@ namespace FourSquare.SharpSquare.Core
 {
     public class SharpSquare
     {
-        private const string AuthenticateUrl = "https://foursquare.com/oauth2/authenticate";
-        private const string AccessTokenUrl = "https://foursquare.com/oauth2/access_token";
-        private const string ApiUrl = "https://api.foursquare.com/v2";
-        private const string ApiVersion = "20140101";
+        public const string AuthenticateUrl = "https://foursquare.com/oauth2/authenticate";
+        public const string AccessTokenUrl = "https://foursquare.com/oauth2/access_token";
+        public const string ApiUrl = "https://api.foursquare.com/v2";
+        public const string ApiVersion = "20140101";
+
         private readonly string clientId;
         private readonly string clientSecret;
 
@@ -105,8 +106,7 @@ namespace FourSquare.SharpSquare.Core
                 oauthToken = string.Format("oauth_token={0}", this.accessToken);
             }
 
-            string json =
-                await this.Request(string.Format("{0}{1}?{2}{3}&v={4}", ApiUrl, endpoint, oauthToken, serializedParameters, ApiVersion), HttpMethod.Get);
+            string json = await this.Request(string.Format("{0}{1}?{2}{3}&v={4}", ApiUrl, endpoint, oauthToken, serializedParameters, ApiVersion), HttpMethod.Get);
             var fourSquareResponse = JsonConvert.DeserializeObject<FourSquareSingleResponse<T>>(json);
             return fourSquareResponse;
         }
