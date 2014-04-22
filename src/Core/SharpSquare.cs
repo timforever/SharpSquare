@@ -179,7 +179,7 @@ namespace FourSquare.SharpSquare.Core
 
         public string GetAuthenticateUrl(string redirectUri, string response_type = "code")
         {
-            return string.Format("{0}?client_id={1}&{3}=code&redirect_uri={2}", AuthenticateUrl, this.clientId, redirectUri, response_type);
+            return string.Format("{0}?client_id={1}&response_type={3}&redirect_uri={2}", AuthenticateUrl, this.clientId, redirectUri, response_type);
         }
 
         public async Task<string> GetAccessToken(string redirectUri, string code)
