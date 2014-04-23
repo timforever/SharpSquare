@@ -95,6 +95,31 @@ namespace FourSquare.SharpSquare.Core
             var fourSquareResponse = JsonConvert.DeserializeObject<FourSquareSingleResponse<T>>(json);
             return fourSquareResponse;
         }
+
+        public async Task<FourSquareSingleRootResponse<T>> GetSingleRoot<T>(string endpoint, Dictionary<string, string> parameters = null, bool unauthenticated = false)
+            where T : FourSquareEntity
+        {
+            string serializedParameters = "";
+
+            if (parameters != null)
+            {
+                serializedParameters = "&" + this.SerializeDictionary(parameters);
+            }
+
+            string oauthToken;
+            if (unauthenticated)
+            {
+                oauthToken = string.Format("client_id={0}&client_secret={1}", this.clientId, this.clientSecret);
+            }
+            else
+            {
+                oauthToken = string.Format("oauth_token={0}", this.accessToken);
+            }
+
+            string json = await this.Request(string.Format("{0}{1}?{2}{3}&v={4}", ApiUrl, endpoint, oauthToken, serializedParameters, ApiVersion), HttpMethod.Get);
+            var fourSquareResponse = JsonConvert.DeserializeObject<FourSquareSingleRootResponse<T>>(json);
+            return fourSquareResponse;
+        }
         
         public async Task<FourSquareMultipleResponse<T>> GetMultiple<T>(string endpoint, Dictionary<string, string> parameters = null, bool unauthenticated = false)
             where T : FourSquareEntity
@@ -214,12 +239,11 @@ namespace FourSquare.SharpSquare.Core
             return (await this.GetMultiple<Category>("/venues/categories", unauthenticated: true)).response["categories"];
         }
 
-          
-        //public async Task<VenueExplore> ExploreVenues(Dictionary<string, string> parameters)
-        //{
-        //    var result = await this.GetSingle<FourSquareEntityExoploreVenuesGroups<VenueExplore>>("/venues/explore", parameters, true);
-        //     return (await this.GetSingle<FourSquareEntityExoploreVenuesGroups<VenueExplore>>("/venues/explore", parameters, true)).response["groups"];
-        //}
+        public async Task<List<FourSquareEntityItems<VenueExplore>>> ExploreVenues(Dictionary<string, string> parameters)
+        {
+            var result = await this.GetSingleRoot<FourSquareEntityExploreVenuesGroups<VenueExplore>>("/venues/explore", parameters, true);
+            return result.response.groups;
+        }
         
         /// <summary>
         ///     https://api.foursquare.com/v2/venues/explore

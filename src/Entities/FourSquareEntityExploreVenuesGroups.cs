@@ -2,10 +2,10 @@
 
 namespace FourSquare.SharpSquare.Entities
 {
-    public class FourSquareEntityExoploreVenuesGroups<T> : FourSquareEntity where T : FourSquareEntity
+    public class FourSquareEntityExploreVenuesGroups<T> : FourSquareEntity where T : FourSquareEntity
     {
         public int suggestedRadius { get; set; }
-
+         
         public string headerLocation { get; set; }
 
         public string headerFullLocation { get; set; }
