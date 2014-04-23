@@ -71,22 +71,7 @@ namespace FourSquare.SharpSquare.Core
             return parameters.Remove(parameters.Length - 1, 1).ToString();
         }
 
-        private async Task<FourSquareSingleResponse<T>> GetSingle<T>(string endpoint) where T : FourSquareEntity
-        {
-            return await this.GetSingle<T>(endpoint, null, false);
-        }
-
-        private async Task<FourSquareSingleResponse<T>> GetSingle<T>(string endpoint, bool unauthenticated) where T : FourSquareEntity
-        {
-            return await this.GetSingle<T>(endpoint, null, unauthenticated);
-        }
-
-        private async Task<FourSquareSingleResponse<T>> GetSingle<T>(string endpoint, Dictionary<string, string> parameters) where T : FourSquareEntity
-        {
-            return await this.GetSingle<T>(endpoint, parameters, false);
-        }
-
-        private async Task<FourSquareSingleResponse<T>> GetSingle<T>(string endpoint, Dictionary<string, string> parameters, bool unauthenticated)
+        public async Task<FourSquareSingleResponse<T>> GetSingle<T>(string endpoint, Dictionary<string, string> parameters = null, bool unauthenticated = false)
             where T : FourSquareEntity
         {
             string serializedParameters = "";
@@ -110,23 +95,8 @@ namespace FourSquare.SharpSquare.Core
             var fourSquareResponse = JsonConvert.DeserializeObject<FourSquareSingleResponse<T>>(json);
             return fourSquareResponse;
         }
-
-        private async Task<FourSquareMultipleResponse<T>> GetMultiple<T>(string endpoint) where T : FourSquareEntity
-        {
-            return await this.GetMultiple<T>(endpoint, null, false);
-        }
-
-        private async Task<FourSquareMultipleResponse<T>> GetMultiple<T>(string endpoint, bool unauthenticated) where T : FourSquareEntity
-        {
-            return await this.GetMultiple<T>(endpoint, null, unauthenticated);
-        }
-
-        private async Task<FourSquareMultipleResponse<T>> GetMultiple<T>(string endpoint, Dictionary<string, string> parameters) where T : FourSquareEntity
-        {
-            return await this.GetMultiple<T>(endpoint, parameters, false);
-        }
-
-        private async Task<FourSquareMultipleResponse<T>> GetMultiple<T>(string endpoint, Dictionary<string, string> parameters, bool unauthenticated)
+        
+        public async Task<FourSquareMultipleResponse<T>> GetMultiple<T>(string endpoint, Dictionary<string, string> parameters = null, bool unauthenticated = false)
             where T : FourSquareEntity
         {
             string serializedParameters = "";
@@ -177,9 +147,9 @@ namespace FourSquare.SharpSquare.Core
             return fourSquareResponse;
         }
 
-        public string GetAuthenticateUrl(string redirectUri, string response_type = "code")
+        public string GetAuthenticateUrl(string redirectUri, string responseType = "code")
         {
-            return string.Format("{0}?client_id={1}&response_type={3}&redirect_uri={2}", AuthenticateUrl, this.clientId, redirectUri, response_type);
+            return string.Format("{0}?client_id={1}&response_type={3}&redirect_uri={2}", AuthenticateUrl, this.clientId, redirectUri, responseType);
         }
 
         public async Task<string> GetAccessToken(string redirectUri, string code)
@@ -207,7 +177,7 @@ namespace FourSquare.SharpSquare.Core
         /// </summary>
         public async Task<Venue> GetVenue(string venueId)
         {
-            return (await this.GetSingle<Venue>("/venues/" + venueId, true)).response["venue"];
+            return (await this.GetSingle<Venue>("/venues/" + venueId, unauthenticated: true)).response["venue"];
         }
 
         /// <summary>
@@ -241,17 +211,16 @@ namespace FourSquare.SharpSquare.Core
         /// </summary>
         public async Task<List<Category>> GetVenueCategories()
         {
-            return (await this.GetMultiple<Category>("/venues/categories", true)).response["categories"];
+            return (await this.GetMultiple<Category>("/venues/categories", unauthenticated: true)).response["categories"];
         }
 
-        /*  
-        public List<VenueExplore> ExploreVenues(Dictionary<string, string> parameters)
-        {
-           return GetSingle<FourSquareEntityExoploreVenuesGroups<VenueExplore>>("/venues/explore", parameters, true).response["groups"];
-
-           return venues.items;
-        }
-        */
+          
+        //public async Task<VenueExplore> ExploreVenues(Dictionary<string, string> parameters)
+        //{
+        //    var result = await this.GetSingle<FourSquareEntityExoploreVenuesGroups<VenueExplore>>("/venues/explore", parameters, true);
+        //     return (await this.GetSingle<FourSquareEntityExoploreVenuesGroups<VenueExplore>>("/venues/explore", parameters, true)).response["groups"];
+        //}
+        
         /// <summary>
         ///     https://api.foursquare.com/v2/venues/explore
         ///     Returns a list of recommended venues near the current location.
@@ -373,7 +342,7 @@ namespace FourSquare.SharpSquare.Core
         /// </summary>
         public async Task<List<Link>> GetVenueLinks(string venueId)
         {
-            FourSquareEntityItems<Link> links = (await this.GetSingle<FourSquareEntityItems<Link>>("/venues/" + venueId + "/links", true)).response["links"];
+            FourSquareEntityItems<Link> links = (await this.GetSingle<FourSquareEntityItems<Link>>("/venues/" + venueId + "/links", unauthenticated:true)).response["links"];
 
             return links.items;
         }
@@ -469,7 +438,7 @@ namespace FourSquare.SharpSquare.Core
         /// </summary>
         public async Task<Tip> GetTip(string tipId)
         {
-            return (await this.GetSingle<Tip>("/tips/" + tipId, true)).response["tip"];
+            return (await this.GetSingle<Tip>("/tips/" + tipId, unauthenticated: true)).response["tip"];
         }
 
         /// <summary>
@@ -578,7 +547,7 @@ namespace FourSquare.SharpSquare.Core
         /// </summary>
         public async Task<Special> GetSpecial(string specialId)
         {
-            return (await this.GetSingle<Special>("/specials/" + specialId, true)).response["special"];
+            return (await this.GetSingle<Special>("/specials/" + specialId, unauthenticated: true)).response["special"];
         }
 
         /// <summary>
