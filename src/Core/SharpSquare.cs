@@ -146,6 +146,51 @@ namespace FourSquare.SharpSquare.Core
             return fourSquareResponse;
         }
 
+
+        #region CustomCode
+
+        // Note: SearchVenues throws exception beacuse Foursquare response contains "List<Venue>" and "Geocode" but it is not handled in SharpSquare code.
+
+        private Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint) where T : FourSquareEntity
+        {
+            return GetMultipleVenues<T>(endpoint, null, false);
+        }
+
+        private Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, bool unauthenticated) where T : FourSquareEntity
+        {
+            return GetMultipleVenues<T>(endpoint, null, unauthenticated);
+        }
+
+        private Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, Dictionary<string, string> parameters) where T : FourSquareEntity
+        {
+            return GetMultipleVenues<T>(endpoint, parameters, false);
+        }
+
+        private async Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, Dictionary<string, string> parameters, bool unauthenticated) where T : FourSquareEntity
+        {
+            string serializedParameters = "";
+            if (parameters != null)
+            {
+                serializedParameters = "&" + SerializeDictionary(parameters);
+            }
+
+            string oauthToken = "";
+            if (unauthenticated)
+            {
+                oauthToken = string.Format("client_id={0}&client_secret={1}", clientId, clientSecret);
+            }
+            else
+            {
+                oauthToken = string.Format("oauth_token={0}", accessToken);
+            }
+
+            string json = await Request(string.Format("{0}{1}?{2}{3}&v={4}", ApiUrl, endpoint, oauthToken, serializedParameters, ApiVersion), HttpMethod.Get);
+            var fourSquareResponse = JsonConvert.DeserializeObject<FourSquareMultipleVenuesResponse<T>>(json);
+            return fourSquareResponse;
+        }
+
+        #endregion
+
         private async Task Post(string endpoint, Dictionary<string, string> parameters = null)
         {
             string serializedParameters = "";
@@ -287,8 +332,7 @@ namespace FourSquare.SharpSquare.Core
         /// </summary>
         public async Task<List<Venue>> SearchVenues(Dictionary<string, string> parameters)
         {
-            FourSquareEntityItems<Venue> venues = (await this.GetSingle<FourSquareEntityItems<Venue>>("/venues/search", parameters, true)).response["groups"];
-            return venues.items;
+            return (await GetMultipleVenues<Venue>("/venues/search", parameters, true)).response.venues;
         }
 
         /// <summary>
