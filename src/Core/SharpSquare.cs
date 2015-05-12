@@ -146,27 +146,7 @@ namespace FourSquare.SharpSquare.Core
             return fourSquareResponse;
         }
 
-
-        #region CustomCode
-
-        // Note: SearchVenues throws exception beacuse Foursquare response contains "List<Venue>" and "Geocode" but it is not handled in SharpSquare code.
-
-        private Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint) where T : FourSquareEntity
-        {
-            return GetMultipleVenues<T>(endpoint, null, false);
-        }
-
-        private Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, bool unauthenticated) where T : FourSquareEntity
-        {
-            return GetMultipleVenues<T>(endpoint, null, unauthenticated);
-        }
-
-        private Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, Dictionary<string, string> parameters) where T : FourSquareEntity
-        {
-            return GetMultipleVenues<T>(endpoint, parameters, false);
-        }
-
-        private async Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, Dictionary<string, string> parameters, bool unauthenticated) where T : FourSquareEntity
+        private async Task<FourSquareMultipleVenuesResponse<T>> GetMultipleVenues<T>(string endpoint, Dictionary<string, string> parameters = null, bool unauthenticated = false) where T : FourSquareEntity
         {
             string serializedParameters = "";
             if (parameters != null)
@@ -188,8 +168,6 @@ namespace FourSquare.SharpSquare.Core
             var fourSquareResponse = JsonConvert.DeserializeObject<FourSquareMultipleVenuesResponse<T>>(json);
             return fourSquareResponse;
         }
-
-        #endregion
 
         private async Task Post(string endpoint, Dictionary<string, string> parameters = null)
         {
